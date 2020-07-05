@@ -1,14 +1,14 @@
 ---
 layout: compress
-#
 # A part of the Favicons
 # Chirpy v2.0
-# https://github.com/cotes2020/jekyll-theme-chirpy
+# https: //github.com/cotes2020/jekyll-theme-chirpy
 # © 2019 Cotes Chung
 # MIT License
 ---
 
-{% assign icon_url = "/assets/img/favicons" | relative_url %}
+{% assign icon_url = "/assets/img/favicons" | relative_url %
+}
 
 {
   "name": "{{ site.title }}",
@@ -50,9 +50,10 @@ layout: compress
       "sizes": "192x192",
       "type": "image/png",
       "density": "4.0"
-    }],
-    "start_url": "{{ '/index.html' | relative_url }}",
-    "display": "fullscreen",
-    "theme_color": "#2a1e6b",
-    "background_color": "white"
+    }
+  ],
+  "start_url": "{{ '/index.html' | relative_url }}",
+  "display": "fullscreen",
+  "theme_color": "#2a1e6b",
+  "background_color": "white"
 }

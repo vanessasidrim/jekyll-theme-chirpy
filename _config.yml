@@ -7,19 +7,19 @@
 # MIT licensed
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
-title: Chirpy # the main title
+title: Vanessa Sidrim # the main title
 
-tagline: A text-focused Jekyll theme. # it will display as the sub-title
+tagline: Mestranda em Ciência da Computação pela Unicamp, Pylady no Pyladies Paraíba. # it will display as the sub-title
 
-description: >- # used by seo meta and the atom feed
-  A minimal, portfolio, sidebar,
-  bootstrap Jekyll theme with responsive web design
-  and focuses on text presentation.
+#description: >- # used by seo meta and the atom feed
+#  A minimal, portfolio, sidebar,
+#  bootstrap Jekyll theme with responsive web design
+#  and focuses on text presentation.
 
 # Replace with the website url, e.g. 'https://username.github.io'
 url: "https://vanessasidrim.github.io"
 
-author: your_full_name # change to your full name
+author: Vanessa Sidrim # change to your full name
 
 avatar: /assets/img/sample/avatar.png # support internet resources
 
@@ -27,7 +27,7 @@ github:
   username: vanessasidrim # change to your github username
 
 twitter:
-  username: twitter_username # change to your twitter username
+  username: vanessasidrim # change to your twitter username
 
 social:
   name: Vanessa Sidrim # it will shows as the copyright owner in Footer
@@ -126,7 +126,7 @@ defaults:
       tab_active: Tags
       location: Tag
       breadcrumb:
-        - label: Home
+        - label: Início
           url: /
         - label: Tags
           url: /tabs/tags/
@@ -136,17 +136,17 @@ defaults:
       tab_active: Categories
       location: Category
       breadcrumb:
-        - label: Home
+        - label: Início
           url: /
-        - label: Categories
-          url: /tabs/categories/
+        - label: Categorias
+          url: /tabs/categorias/
   - scope:
       path: tabs
     values:
       layout: page
       dynamic_title: true # Hide title in mobile screens.
       breadcrumb:
-        - label: Home
+        - label: Início
           url: /
 
 sass:
@@ -196,11 +196,11 @@ sitemap_exclude: # Sitemap will exclude the following items.
   accurate:
     - /norobots/
     - /tabs/
-    - /categories/
+    - /categorias/
     - /tags/
     - /posts/
     - 404.html
-    - feed.xml
+    # - feed.xml
     - sitemap.xml
     - robots.txt
     - redirects.json
