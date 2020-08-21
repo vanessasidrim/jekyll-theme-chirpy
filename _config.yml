@@ -1,5 +1,3 @@
---- #--------------------------
-
 # The Site Settings
 # v2.0
 # https://github.com/cotes2020/jekyll-theme-chirpy
@@ -17,27 +15,25 @@ tagline: Mestranda em Ciência da Computação pela Unicamp, Pylady no Pyladies 
 #  and focuses on text presentation.
 
 # Replace with the website url, e.g. 'https://username.github.io'
-url: "https://vanessasidrim.github.io"
+url: "protocol://domain"
 
 author: Vanessa Sidrim # change to your full name
 
-avatar: /assets/img/sample/avatar.png # support internet resources
+avatar: /assets/img/sample/avatar.jpg # support internet resources
 
 github:
-  username: vanessasidrim # change to your github username
+  username: github_username # change to your github username
 
 twitter:
   username: vanessasidrim # change to your twitter username
 
 social:
-  name: Vanessa Sidrim # it will shows as the copyright owner in Footer
-  email: vanessasidrim@gmail.com # change to your email address
+  name: your_full_name # it will shows as the copyright owner in Footer
+  email: example@doamin.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/vanessasidrim # change to your twitter homepage
-    - https://github.com/vanessasidrim # change to your github homepage
-    - https://www.linkedin.com/in/vanessa-sidrim
-
+    - https://twitter.com/username # change to your twitter homepage
+    - https://github.com/username # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
@@ -51,7 +47,7 @@ google_site_verification: google_meta_tag_verification # change to your verifica
 baseurl: ""
 
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
-timezone: America/Sao_Paulo
+timezone: Asia/Shanghai
 
 google_analytics:
   id: "" # Fill with your Google Analytics ID
@@ -126,7 +122,7 @@ defaults:
       tab_active: Tags
       location: Tag
       breadcrumb:
-        - label: Início
+        - label: Home
           url: /
         - label: Tags
           url: /tabs/tags/
@@ -136,17 +132,17 @@ defaults:
       tab_active: Categories
       location: Category
       breadcrumb:
-        - label: Início
+        - label: Home
           url: /
-        - label: Categorias
-          url: /tabs/categorias/
+        - label: Categories
+          url: /tabs/categories/
   - scope:
       path: tabs
     values:
       layout: page
       dynamic_title: true # Hide title in mobile screens.
       breadcrumb:
-        - label: Início
+        - label: Home
           url: /
 
 sass:
