@@ -13,13 +13,13 @@ CATEGORIES=false
 TAGS=false
 LASTMOD=false
 
-WORK_DIR=$(dirname $(dirname $(realpath "$0")))
+WORK_DIR="$(dirname $(dirname $(realpath "$0")))"
 
 check_status() {
   local _change=$(git status . -s)
 
-  if [[ ! -z ${_change} ]]; then
-    echo "Warning: Commit the changes of the changes first:"
+  if [[ ! -z $_change ]]; then
+    echo "Warning: Commit the following changes first:"
     echo "$_change"
     exit 1
   fi
@@ -29,8 +29,6 @@ check_status() {
 update_files() {
   bash _scripts/sh/create_pages.sh
   bash _scripts/sh/dump_lastmod.sh
-
-  find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 }
 
 
@@ -83,7 +81,7 @@ push() {
 
 main() {
 
-  cd $WORK_DIR
+  cd "$WORK_DIR"
 
   check_status
 

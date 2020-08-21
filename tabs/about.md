@@ -1,5 +1,6 @@
 ---
-title: Sobre
+title: About
+
 # The About page
 # v2.0
 # https://github.com/cotes2020/jekyll-theme-chirpy

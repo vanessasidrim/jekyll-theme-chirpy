@@ -11,96 +11,24 @@
  * MIT License
  */
 
-function countUp(min, max, destId) {
-  if (min < max) {
-    var numAnim = new CountUp(destId, min, max);
-    if (!numAnim.error) {
-      numAnim.start();
-    } else {
-      console.error(numAnim.error);
-    }
-  }
-}
-
-
-function countPV(path, rows) {
-  /* path permalink looks like: '/posts/post-title/' */
-  var fileName = path.replace(/\/posts\//g, '').replace(/\//g, '.html'); /* e.g. post-title.html */
-  var count = 0;
-
-  var _v2_url = path.replace(/posts\//g, ''); /* the v2.0+ blog permalink: "/post-title/" */
-
-  for (var i = 0; i < rows.length; ++i) {
-    var gaPath = rows[i][0];
-    if (gaPath == path ||
-      gaPath == _v2_url ||
-      gaPath.concat('/') == _v2_url ||
-      gaPath.slice(gaPath.lastIndexOf('/') + 1) === fileName) {
-      /* old permalink record */
-      count += parseInt(rows[i][1]);
-    }
-  }
-
-  return count;
-}
-
-
-function tacklePV(rows, path, elem, hasInit) {
-  var count = countPV(path, rows);
-  count = (count == 0 ? 1 : count);
-
-  if (!hasInit) {
-    elem.text(new Intl.NumberFormat().format(count));
-  } else {
-    var initCount = parseInt(elem.text().replace(/,/g, ''));
-    if (count > initCount) {
-      countUp(initCount, count, elem.attr('id'));
-    }
-  }
-}
-
-
-function displayPageviews(data) {
-  if (data === undefined) {
-    return;
-  }
-
-  var hasInit = getInitStatus();
-  var rows = data.rows;
-
-  if ($("#post-list").length > 0) {
-    /* the Home page */
-    $(".post-preview").each(function () {
-      var path = $(this).children("div").children("h1").children("a").attr("href");
-      tacklePV(rows, path, $(this).find('.pageviews'), hasInit);
-    });
-
-  } else if ($(".post").length > 0) {
-    /* the post */
-    var path = window.location.pathname;
-    tacklePV(rows, path, $('#pv'), hasInit);
-  }
-}
-
-
 var getInitStatus = (function () {
   var hasInit = false;
-  return function () {
+  return () => {
     let ret = hasInit;
     if (!hasInit) {
       hasInit = true;
     }
     return ret;
-  }
-})();
+  };
+}());
 
 
 var PvCache = (function () {
   const KEY_PV = "pv";
   const KEY_CREATION = "pv_created_date";
-  const KEY_PV_TYPE = "pv_type";
+  const KEY_PV_SRC = "pv_source";
 
-  var PvType = {
+  var Source = {
     ORIGIN: "origin",
     PROXY: "proxy"
   };
@@ -114,123 +42,182 @@ var PvCache = (function () {
   }
 
   return {
-    getData: function () {
-      return JSON.parse(localStorage.getItem(KEY_PV));
+    getData() {
+      return JSON.parse(localStorage.getItem(KEY_PV) );
     },
-    saveOriginCache: function (pv) {
+    saveOriginCache(pv) {
       set(KEY_PV, pv);
-      set(KEY_PV_TYPE, PvType.ORIGIN);
-      set(KEY_CREATION, new Date().toJSON());
+      set(KEY_PV_SRC, Source.ORIGIN );
+      set(KEY_CREATION, new Date().toJSON() );
     },
-    saveProxyCache: function (pv) {
+    saveProxyCache(pv) {
       set(KEY_PV, pv);
-      set(KEY_PV_TYPE, PvType.PROXY);
-      set(KEY_CREATION, new Date().toJSON());
+      set(KEY_PV_SRC, Source.PROXY );
+      set(KEY_CREATION, new Date().toJSON() );
     },
-    isOriginCache: function () {
-      return get(KEY_PV_TYPE) == PvType.ORIGIN;
+    isFromOrigin() {
+      return get(KEY_PV_SRC) === Source.ORIGIN;
     },
-    isProxyCache: function () {
-      return get(KEY_PV_TYPE) == PvType.PROXY;
+    isFromProxy() {
+      return get(KEY_PV_SRC) === Source.PROXY;
     },
-    isExpired: function () {
-      if (PvCache.isOriginCache()) {
+    isExpired() {
+      if (PvCache.isFromOrigin() ) {
         let date = new Date(get(KEY_CREATION));
-        date.setDate(date.getDate() + 1); /* fetch origin-data every day */
+        date.setDate(date.getDate() + 1); /* update origin records every day */
         return Date.now() >= date.getTime();
 
-      } else if (PvCache.isProxyCache()) {
-        let date = new Date(get(KEY_CREATION));
-        date.setHours(date.getHours() + 1); /* proxy-data is updated every hour */
+      } else if (PvCache.isFromProxy() ) {
+        let date = new Date(get(KEY_CREATION) );
+        date.setHours(date.getHours() + 1); /* update proxy records per hour */
         return Date.now() >= date.getTime();
       }
       return false;
     },
-    getAllPagevies: function () {
+    getAllPagevies() {
       return PvCache.getData().totalsForAllResults["ga:pageviews"];
     },
-    newerThan: function (pv) {
+    newerThan(pv) {
       return PvCache.getAllPagevies() > pv.totalsForAllResults["ga:pageviews"];
     },
-    inspectKeys: function () {
-      if (localStorage.getItem(KEY_PV) == null ||
-        localStorage.getItem(KEY_PV_TYPE) == null ||
-        localStorage.getItem(KEY_CREATION) == null) {
+    inspectKeys() {
+      if (localStorage.getItem(KEY_PV) === null
+        || localStorage.getItem(KEY_PV_SRC) === null
+        || localStorage.getItem(KEY_CREATION) === null) {
         localStorage.clear();
       }
     }
   };
 
-})(); /* PvCache */
+}()); /* PvCache */
+
+function countUp(min, max, destId) {
+  if (min < max) {
+    var numAnim = new CountUp(destId, min, max);
+    if (!numAnim.error) {
+      numAnim.start();
+    } else {
+      console.error(numAnim.error);
+    }
+  }
+}
 
 
-function fetchOriginPageviews(pvData) {
-  if (pvData === undefined) {
+function countPV(path, rows) {
+  var count = 0;
+
+  if (typeof rows !== "undefined" ) {
+    for (var i = 0; i < rows.length; ++i) {
+      var gaPath = rows[parseInt(i, 10)][0];
+      if (gaPath === path) { /* path format see: site.permalink */
+        count += parseInt(rows[parseInt(i, 10)][1], 10);
+        break;
+      }
+    }
+  }
+
+  return count;
+}
+
+
+function tacklePV(rows, path, elem, hasInit) {
+  var count = countPV(path, rows);
+  count = (count === 0 ? 1 : count);
+
+  if (!hasInit) {
+    elem.text(new Intl.NumberFormat().format(count));
+  } else {
+    var initCount = parseInt(elem.text().replace(/,/g, ""), 10);
+    if (count > initCount) {
+      countUp(initCount, count, elem.attr("id"));
+    }
+  }
+}
+
+
+function displayPageviews(data) {
+  if (typeof data === "undefined") {
     return;
   }
-  displayPageviews(pvData);
-  PvCache.saveOriginCache(JSON.stringify(pvData));
+
+  var hasInit = getInitStatus();
+  var rows = data.rows; /* could be undefined */
+
+  if ($("#post-list").length > 0) { /* the Home page */
+    $(".post-preview").each(function() {
+      var path = $(this).children("div").children("h1").children("a").attr("href");
+      tacklePV(rows, path, $(this).find(".pageviews"), hasInit);
+    });
+
+  } else if ($(".post").length > 0) { /* the post */
+    var path = window.location.pathname;
+    tacklePV(rows, path, $("#pv"), hasInit);
+  }
 }
 
 
 function fetchProxyPageviews() {
-  let proxy = JSON.parse(proxyData); /* see file '/assets/data/pv-data.json' */
   $.ajax({
-    type: 'GET',
-    url: proxy.url,
-    dataType: 'jsonp',
+    type: "GET",
+    url: proxyEndpoint, /* see: /assets/js/_pv-config.js */
+    dataType: "jsonp",
     jsonpCallback: "displayPageviews",
-    success: function (data, textStatus, jqXHR) {
+    success: (data, textStatus, jqXHR) => {
       PvCache.saveProxyCache(JSON.stringify(data));
     },
-    error: function (jqXHR, textStatus, errorThrown) {
+    error: (jqXHR, textStatus, errorThrown) => {
       console.log("Failed to load pageviews from proxy server: " + errorThrown);
     }
   });
 }
 
 
-$(function () {
+function fetchPageviews(fetchOrigin = true, filterOrigin = false) {
+  /* pvCacheEnabled › see: /assets/js/_pv-config.js */
+  if (pvCacheEnabled && fetchOrigin) {
+    fetch("/assets/js/data/pageviews.json")
+      .then((response) => response.json())
+      .then((data) => {
+        if (filterOrigin) {
+          if (PvCache.newerThan(data)) {
+            return;
+          }
+        }
+        displayPageviews(data);
+        PvCache.saveOriginCache(JSON.stringify(data));
+      })
+      .then(() => fetchProxyPageviews());
 
-  if ($('.pageviews').length > 0) {
+  } else {
+    fetchProxyPageviews();
+  }
+
+}
+
+
+$(function() {
+
+  if ($(".pageviews").length > 0) {
 
     PvCache.inspectKeys();
-
     let cache = PvCache.getData();
 
     if (cache) {
+      displayPageviews(cache);
+
       if (PvCache.isExpired()) {
-        if (PvCache.isProxyCache()) {
-          let originPvData = pageviews ? JSON.parse(pageviews) : undefined;
-          if (originPvData) {
-            if (PvCache.newerThan(originPvData)) {
-              displayPageviews(cache);
-            } else {
-              fetchOriginPageviews(originPvData);
-            }
-          }
-
-          fetchProxyPageviews();
-
-        } else if (PvCache.isOriginCache()) {
-          fetchOriginPageviews(originPvData);
-          fetchProxyPageviews();
-        }
+        fetchPageviews(true, PvCache.isFromProxy());
 
       } else {
-        /* still valid */
-        displayPageviews(cache);
 
-        if (PvCache.isOriginCache()) {
-          fetchProxyPageviews();
+        if (PvCache.isFromOrigin()) {
+          fetchPageviews(false);
         }
 
       }
 
     } else {
-      let originPvData = pageviews ? JSON.parse(pageviews) : undefined;
-      fetchOriginPageviews(originPvData);
-      fetchProxyPageviews();
+      fetchPageviews();
     }
 
   }
